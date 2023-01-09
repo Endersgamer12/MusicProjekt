@@ -16,6 +16,7 @@ public class GUI implements ActionListener {
     JLabel label;
     JPanel panel;
     JButton button;
+    JButton button1;
     JFrame frame;
 
     public GUI() {
