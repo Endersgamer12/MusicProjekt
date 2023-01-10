@@ -3,6 +3,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.plaf.DimensionUIResource;
 
 import java.awt.GridLayout;
@@ -10,45 +11,80 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+
 public class GUI implements ActionListener {
 
-    int count = 0;
-    JLabel label;
     JPanel panel;
-    JButton button;
-    JButton button1;
     JFrame frame;
 
+    JLabel usernamelabel;
+    JLabel passwordlabel;
+
+    private static JTextField userText;
+    private static JTextField passwordText;
+
+    JButton loginButton;
+
     public GUI() {
-        frame = new JFrame();
-
-        button = new JButton("Click");
-        button.addActionListener(this);
-
-        label = new JLabel("Number of clicks: " + count);
 
         panel = new JPanel();
-        panel.setBorder(BorderFactory.createEmptyBorder(30, 30, 10, 30));
-        panel.setLayout(new GridLayout());
-        panel.add(button);
-        panel.add(label);
-
-        frame.setPreferredSize(new DimensionUIResource(300, 200));
-        frame.pack();
-        frame.setLocationRelativeTo(null);
-        frame.add(panel, BorderLayout.CENTER);
+        frame = new JFrame();
+        frame.setSize(350, 200);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setTitle("GUI");
+        frame.add(panel);
+
+        panel.setLayout(null);
+
+        usernamelabel = new JLabel("User");
+        usernamelabel.setBounds(10, 20, 80, 25);
+        panel.add(usernamelabel);
+
+        userText = new JTextField();
+        userText.setBounds(100, 20, 165, 25);
+        panel.add(userText);
+
+        passwordlabel = new JLabel("Password");
+        passwordlabel.setBounds(10, 60, 80, 25);
+        panel.add(passwordlabel);
+
+        passwordText = new JTextField();
+        passwordText.setBounds(100, 60, 165, 25);
+        panel.add(passwordText);
+
+        loginButton = new JButton("Prijava");
+        loginButton.setBounds(100, 100, 120, 25);
+        loginButton.addActionListener(new GUI());
+        panel.add(loginButton);
+
         frame.setVisible(true);
     }
 
     public static void main(String[] args) throws Exception {
+
         new GUI();
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        count++;
-        label.setText("Number of clicks: " + count);
+        try {
+            Class.forName("org.postgresql.Driver");
+            Connection c = DriverManager
+                    .getConnection(
+                            "jdbc:postgresql://ep-wild-darkness-767526.eu-central-1.aws.neon.tech/neondb?user=nik.krnjovsek&password=a1hjwRmFZeE0",
+                            "nik.krnjovsek", "a1hjwRmFZeE0");
+            Statement select = c.createStatement();
+            String sql = "SELECT login('" + userText.getText() + "', '" + passwordText.getText() + "')";
+            ResultSet rs = select.executeQuery(sql);
+            while (rs.next()) {
+                System.out.println(rs.getBoolean(1));
+
+            }
+        } catch (Exception e1) {
+            e1.printStackTrace();
+        }
     }
 }
