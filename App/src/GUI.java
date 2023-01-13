@@ -1,3 +1,4 @@
+import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -55,9 +56,14 @@ public class GUI implements ActionListener {
         passwordText.setBounds(100, 60, 165, 25);
         panel.add(passwordText);
 
-        loginButton = new JButton("Prijava");
+        loginButton = new JButton(new AbstractAction("login") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                gettrust();
+
+            }
+        });
         loginButton.setBounds(100, 100, 120, 25);
-        loginButton.addActionListener(new GUI());
         panel.add(loginButton);
 
         frame.setVisible(true);
@@ -68,8 +74,7 @@ public class GUI implements ActionListener {
         new GUI();
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
+    public void gettrust() {
         try {
             Class.forName("org.postgresql.Driver");
             Connection c = DriverManager
@@ -79,12 +84,21 @@ public class GUI implements ActionListener {
             Statement select = c.createStatement();
             String sql = "SELECT login('" + userText.getText() + "', '" + passwordText.getText() + "')";
             ResultSet rs = select.executeQuery(sql);
-            while (rs.next()) {
-                System.out.println(rs.getBoolean(1));
-
+            if (rs.next()) {
+                if (rs.getBoolean(1)) {
+                    System.out.print("logged in!");
+                } else {
+                    System.out.print("napacni podatki!");
+                }
             }
         } catch (Exception e1) {
             e1.printStackTrace();
         }
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        // TODO Auto-generated method stub
+
     }
 }
