@@ -4,9 +4,11 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 import java.awt.event.ActionListener;
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 
@@ -24,7 +26,7 @@ public class RegisterPage implements ActionListener {
     JLabel passwordlabel;
 
     private static JTextField userText;
-    private static JTextField passwordText;
+    private static JPasswordField passwordText;
 
     JButton registerButton;
     JButton loginButton;
@@ -35,6 +37,8 @@ public class RegisterPage implements ActionListener {
         frame = new JFrame();
         frame.setSize(350, 240);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setTitle("Registracija");
+        panel.setBackground(new Color(76, 218, 240));
         frame.add(panel);
 
         panel.setLayout(null);
@@ -51,19 +55,21 @@ public class RegisterPage implements ActionListener {
         passwordlabel.setBounds(10, 60, 80, 25);
         panel.add(passwordlabel);
 
-        passwordText = new JTextField();
+        passwordText = new JPasswordField();
         passwordText.setBounds(100, 60, 165, 25);
         panel.add(passwordText);
 
         registerButton = new JButton("Register");
         registerButton.addActionListener(this);
         registerButton.setBounds(100, 100, 120, 25);
+        registerButton.setBackground(new Color(77, 152, 218));
         panel.add(registerButton);
 
         loginButton = new JButton("Have an account?");
         loginButton.addActionListener(this);
         loginButton.setBounds(100, 150, 120, 20);
         loginButton.setFont(new Font("Arial", Font.PLAIN, 8));
+        loginButton.setBackground(new Color(77, 152, 218));
         panel.add(loginButton);
 
         frame.setVisible(true);

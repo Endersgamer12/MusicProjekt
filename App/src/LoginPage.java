@@ -3,10 +3,12 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 import java.awt.event.ActionListener;
 import java.io.Console;
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 
@@ -24,7 +26,7 @@ public class LoginPage implements ActionListener {
     JLabel passwordlabel;
 
     private static JTextField userText;
-    private static JTextField passwordText;
+    private static JPasswordField passwordText;
 
     JButton loginButton;
     JButton registerButton;
@@ -35,6 +37,8 @@ public class LoginPage implements ActionListener {
         frame = new JFrame();
         frame.setSize(350, 240);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setTitle("Prijava");
+        panel.setBackground(new Color(76, 218, 240));
         frame.add(panel);
 
         panel.setLayout(null);
@@ -51,19 +55,21 @@ public class LoginPage implements ActionListener {
         passwordlabel.setBounds(10, 60, 80, 25);
         panel.add(passwordlabel);
 
-        passwordText = new JTextField();
+        passwordText = new JPasswordField();
         passwordText.setBounds(100, 60, 165, 25);
         panel.add(passwordText);
 
         loginButton = new JButton("Login");
         loginButton.addActionListener(this);
         loginButton.setBounds(100, 100, 120, 25);
+        loginButton.setBackground(new Color(77, 152, 218));
         panel.add(loginButton);
 
         registerButton = new JButton("Need Account?");
         registerButton.addActionListener(this);
         registerButton.setBounds(110, 150, 100, 20);
         registerButton.setFont(new Font("Arial", Font.PLAIN, 8));
+        registerButton.setBackground(new Color(77, 152, 218));
         panel.add(registerButton);
 
         frame.setVisible(true);
@@ -102,7 +108,7 @@ public class LoginPage implements ActionListener {
         if (e.getSource() == loginButton) {
             int babadoey = gettrust();
             if (babadoey == 1) {
-                RegisterPage registerPage = new RegisterPage();
+                Dashboard dashboard = new Dashboard();
                 frame.dispose();
             }
         }
