@@ -2,10 +2,13 @@ import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import java.awt.event.ActionListener;
 import java.io.Console;
@@ -21,8 +24,9 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Arrays;
+import java.util.List;
 
-public class EditBook implements ActionListener {
+public class EditBook implements ActionListener, ListSelectionListener {
 
     JPanel panel;
     JFrame frame;
@@ -43,6 +47,12 @@ public class EditBook implements ActionListener {
 
     JButton newButton;
     JButton nazajButton;
+
+    String[] zanriArray = new String[1000];
+
+    String zanris = "--/--";
+
+    JList zanri;
 
     GridBagConstraints gbc = new GridBagConstraints();
 
@@ -114,11 +124,24 @@ public class EditBook implements ActionListener {
         gbc.gridy = 3;
         panel.add(noOfPagesText, gbc);
 
-        genresText = new JTextField();
-        genresText.setPreferredSize(new Dimension(150, 30));
+        /*
+         * 
+         * genresText = new JTextField();
+         * genresText.setPreferredSize(new Dimension(150, 30));
+         * gbc.gridx = 1;
+         * gbc.gridy = 4;
+         * panel.add(genresText, gbc);
+         */
+        getGenres();
+
+        zanri = new JList<>(zanriArray);
+        zanri.addListSelectionListener(this);
         gbc.gridx = 1;
         gbc.gridy = 4;
-        panel.add(genresText, gbc);
+        JScrollPane scrollPane = new JScrollPane(zanri);
+        scrollPane.setFont(new Font("Arial", Font.PLAIN, 14));
+        scrollPane.setVisible(true);
+        panel.add(scrollPane, gbc);
 
         newButton = new JButton("Edit item");
         newButton.setBackground(new Color(77, 152, 218));
@@ -145,6 +168,29 @@ public class EditBook implements ActionListener {
         new EditBook();
     }
 
+    public void getGenres() {
+        try {
+            Class.forName("org.postgresql.Driver");
+            Connection c = DriverManager
+                    .getConnection(
+                            "jdbc:postgresql://ep-wild-darkness-767526.eu-central-1.aws.neon.tech/neondb?user=nik.krnjovsek&password=a1hjwRmFZeE0",
+                            "nik.krnjovsek", "a1hjwRmFZeE0");
+            Statement select = c.createStatement();
+            String sql = "SELECT dobi_zanre()";
+            ResultSet rs = select.executeQuery(sql);
+            int counters = 0;
+            while (rs.next()) {
+                String item = rs.getString(1);
+                zanriArray[counters] = item;
+
+                counters++;
+            }
+
+        } catch (Exception e1) {
+            e1.printStackTrace();
+        }
+    }
+
     public void alterBook(String id, String ime, String pisateljIme, String pisateljPriimek, String steviloStrani,
             String zanri) {
         try {
@@ -160,7 +206,8 @@ public class EditBook implements ActionListener {
                             "jdbc:postgresql://ep-wild-darkness-767526.eu-central-1.aws.neon.tech/neondb?user=nik.krnjovsek&password=a1hjwRmFZeE0",
                             "nik.krnjovsek", "a1hjwRmFZeE0");
             Statement select = c.createStatement();
-            String sql = "SELECT spremeniKnjigo(" + idKnjige + ",'" + ime.replace(',', ' ') + "', '" + "','" +
+            String sql = "SELECT spremeniKnjigo(" + idKnjige + ",'" + ime.replace(',', ' ') + "', '" + pisateljIme
+                    + "','" +
                     pisateljPriimek.replace(',', ' ') + "', " + steviloStrani.replace(',', ' ') +
                     ", '" + zanri + "', " + temp + ")";
             ResultSet rs = select.executeQuery(sql);
@@ -174,9 +221,25 @@ public class EditBook implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == newButton) {
             alterBook(idKnjige, bookNameText.getText(), authorNameText.getText(), authorSurnameText.getText(),
-                    noOfPagesText.getText(), genresText.getText());
+                    noOfPagesText.getText(), zanris);
+
+            System.out.println(authorNameText.getText());
         }
         Dashboard dashboard = new Dashboard();
         frame.dispose();
+    }
+
+    @Override
+    public void valueChanged(ListSelectionEvent e) {
+        List zanredn = zanri.getSelectedValuesList();
+        zanris = "";
+        for (int i = 0; i < zanredn.size(); i++) {
+            if (i == 0) {
+                zanris = zanredn.get(i).toString();
+            } else {
+                zanris = zanris + "," + zanredn.get(i);
+            }
+        }
+        System.out.println(zanris);
     }
 }

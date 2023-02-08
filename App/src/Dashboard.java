@@ -190,8 +190,6 @@ public class Dashboard implements ActionListener {
                     .setText(booksTable.getModel().getValueAt(booksTable.getSelectedRow(), 3).toString());
             editBook.noOfPagesText
                     .setText(booksTable.getModel().getValueAt(booksTable.getSelectedRow(), 4).toString());
-            editBook.genresText
-                    .setText(booksTable.getModel().getValueAt(booksTable.getSelectedRow(), 5).toString());
             editBook.idKnjige = booksTable.getModel().getValueAt(booksTable.getSelectedRow(), 0).toString();
             frame.dispose();
         } else if (e.getSource() == deleteButton) {
